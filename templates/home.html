@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Home | FocusPort Portfolio{% endblock %}
+
+{% block content %}
+    <h1>FocusPort: Phase 3 Global Layout</h1>
+    <p><span class="status-badge">✅ ACTIVE</span> Template Inheritance Enabled</p>
+    <hr>
+    
+    <h2>My Photography Collections</h2>
+    
+    {% for gallery in galleries %}
+        <div class="gallery-card">
+            <h3>
+                {% if gallery.slug %}
+                    <a href="{% url 'gallery_detail' gallery.slug %}">{{ gallery.title }}</a>
+                {% else %}
+                    {{ gallery.title }} <span class="error-text">(Missing Slug - Check Admin)</span>
+                {% endif %}
+            </h3>
+            
+            <p>{{ gallery.description }}</p>
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <!-- Using |slice:":3" keeps the home page neat by showing a preview -->
+                {% for photo in gallery.photos.all|slice:":3" %}
+                <div style="text-align: center;">
+                    <img src="{{ photo.image.url }}" alt="{{ photo.caption }}" style="width: 200px; height: 150px; object-fit: cover; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <p style="font-size: 0.8em; color: #666;">{{ photo.caption }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            {% if gallery.photos.count > 3 %}
+                <p><small><a href="{% url 'gallery_detail' gallery.slug %}">+ View all {{ gallery.photos.count }} photos</a></small></p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No galleries found. Add your first collection in the <a href="/admin">Admin Dashboard</a>!</p>
+    {% endfor %}
+{% endblock %}

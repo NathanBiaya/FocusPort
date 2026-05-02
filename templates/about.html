@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}About | FocusPort{% endblock %}
+
+{% block content %}
+    <div style="display: flex; gap: 40px; align-items: center; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 300px;">
+            <h1>About the Photographer</h1>
+            <p style="font-size: 1.1em; line-height: 1.6; color: #444;">
+                Hello! I'm the creator of FocusPort. This portfolio is a showcase of high-fidelity 
+                visual storytelling, built using Django and Cloudinary. 
+            </p>
+            <p style="line-height: 1.6; color: #666;">
+                My work focuses on capturing moments that tell a story beyond the frame. 
+                Whether it's landscapes, portraits, or urban exploration, I believe every 
+                image should evoke an emotion.
+            </p>
+            
+            <div style="margin-top: 30px; padding: 20px; background: #f0f7fd; border-radius: 8px;">
+                <h3>Get In Touch</h3>
+                <p>📧 Email: hello@focusport.demo</p>
+                <p>📸 Instagram: @FocusPort_Gallery</p>
+            </div>
+        </div>
+        
+        <div style="flex: 1; text-align: center;">
+            <!-- Placeholder for your profile picture -->
+            <div style="width: 300px; height: 300px; background: #ddd; border-radius: 50%; margin: auto; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #888;">
+                [Your Photo Here]
+            </div>
+        </div>
+    </div>
+{% endblock %}

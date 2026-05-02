@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FocusPort{% endblock %}</title>
+    
+    <style>
+    /* 1. Define our color palettes */
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --nav-bg: #2c3e50;
+        --card-bg: #f9f9f9;
+        --accent: #3498db;
+    }
+
+    [data-theme="dark"] {
+        --bg-color: #121212;
+        --text-color: #e0e0e0;
+        --nav-bg: #000000;
+        --card-bg: #1e1e1e;
+        --accent: #5dade2;
+    }
+
+    /* 2. Global Styles */
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        margin: 0; 
+        background-color: var(--bg-color); 
+        color: var(--text-color);
+        transition: background 0.3s, color 0.3s;
+    }
+
+    nav { 
+        background: var(--nav-bg); 
+        color: white; 
+        padding: 1rem 2rem; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+    }
+
+    nav a { 
+        color: white; 
+        margin-left: 20px; 
+        text-decoration: none; 
+        position: relative; /* Required for the underline to position itself */
+        padding-bottom: 5px;
+        transition: color 0.3s ease;
+    }
+
+    /* The "Animated Underline" logic */
+    nav a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: var(--accent);
+        transition: width 0.3s ease;
+    }
+
+    nav a:hover {
+        color: var(--accent);
+    }
+
+    nav a:hover::after {
+        width: 100%;
+    }
+
+    .container { 
+        padding: 40px; 
+        max-width: 1200px; 
+        margin: auto; 
+        min-height: 80vh; 
+    }
+
+    .gallery-card { 
+        background: var(--card-bg); 
+        border: 1px solid rgba(0,0,0,0.1);
+        padding: 15px;
+        border-radius: 12px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden; /* Keeps the zooming image inside the card */
+    }
+
+    /* The "Lift" effect */
+    .gallery-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    border-color: var(--accent);
+    }
+
+    /* The "Zoom" effect for images */
+    .gallery-card img {
+    transition: transform 0.5s ease;
+    border-radius: 8px;
+    }
+
+    .gallery-card:hover img {
+    transform: scale(1.05);
+    }
+
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        font-size: 0.9em;
+        border-top: 1px solid #ddd;
+        margin-top: 40px;
+    }
+
+
+    /* Page Load Animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+        animation: fadeIn 0.6s ease-out;
+    }
+
+
+/* --- RESPONSIVE DESIGN --- */
+
+/* For tablets and phones */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column; /* Stack logo and links vertically */
+        padding: 1rem;
+    }
+
+    nav div {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    nav a {
+        margin: 5px;
+        font-size: 0.9em;
+    }
+
+    .container {
+        padding: 20px; /* Less whitespace on small screens */
+    }
+
+    h1 {
+        font-size: 1.8em; /* Slightly smaller headers */
+    }
+}
+
+/* Specific fix for the Gallery Grid */
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+
+
+
+
+
+    
+
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <nav>
+        <div style="font-size: 1.5em; font-weight: bold;">FocusPort</div>
+        <div>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'contact' %}">Contact</a>
+            <a href="/admin">Admin</a>
+            <button id="theme-toggle" style="margin-left: 20px; cursor: pointer; background: none; border: 1px solid white; color: white; padding: 5px 10px; border-radius: 5px;">
+                🌙 Dark
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block content %}
+        <!-- Unique page content goes here -->
+        {% endblock %}
+    </div>
+
+    <footer>
+        &copy; 2026 FocusPort Professional Portfolio
+    </footer>
+
+    <script>
+        const toggleBtn = document.getElementById('theme-toggle');
+        const currentTheme = localStorage.getItem('theme');
+
+        // Check for saved user preference
+        if (currentTheme) {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            if (currentTheme === 'dark') {
+                toggleBtn.textContent = '☀️ Light';
+            }
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                toggleBtn.textContent = '🌙 Dark';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                toggleBtn.textContent = '☀️ Light';
+            }
+        });
+    </script>
+</body>
+</html>
