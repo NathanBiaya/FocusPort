@@ -1,29 +1,36 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 # 1. Load the .env file
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# 2. Read variables from .env
+# 2. Security & Environment
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = ['focusport.onrender.com', 'localhost', '127.0.0.1']
 
 INSTALLED_APPS = [
+    'cloudinary_storage', # Must be before staticfiles
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary',
+    'crispy_forms',
+    'crispy_bootstrap5',
     'galleries',
 ]
+
+# Crispy Forms Config
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,11 +63,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'focusport_project.wsgi.application'
 
+# 3. DATABASE - Auto-detects Render Postgres or uses local SQLite
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -76,8 +84,9 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# 3. Cloudinary Configuration
+# 4. Cloudinary Configuration
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.getenv('CLOUDINARY_NAME'),
     'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
@@ -86,11 +95,4 @@ CLOUDINARY_STORAGE = {
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# Standard Cloudinary python config
-import cloudinary
-cloudinary.config(
-  cloud_name = CLOUDINARY_STORAGE['CLOUD_NAME'],
-  api_key = CLOUDINARY_STORAGE['API_KEY'],
-  api_secret = CLOUDINARY_STORAGE['API_SECRET'],
-  secure = True
-)
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
